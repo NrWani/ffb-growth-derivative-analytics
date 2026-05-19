@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrotech Analytics: Derivative Applications in FFB Growth</title>
+    <!-- Chart.js CDN for interactive visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-green: #1b5e20;
+            --secondary-blue: #0d47a1;
+            --bg-light: #f4f6f8;
+            --text-dark: #2c3e50;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard-container {
+            max-width: 1100px;
+            width: 100%;
+            background: var(--white);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 4px solid var(--primary-green);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            background-color: #e8f5e9;
+            color: var(--primary-green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .info-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .info-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 10px;
+            border-top: 4px solid var(--primary-green);
+        }
+
+        .info-card.math-card { border-top-color: var(--secondary-blue); }
+
+        .math-block {
+            background: #263238;
+            color: #eceff1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.95rem;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .chart-box {
+            position: relative;
+            height: 420px;
+            width: 100%;
+            margin: 25px 0;
+        }
+
+        .instruction-tip {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .output-panel {
+            background: #e3f2fd;
+            border-left: 6px solid var(--secondary-blue);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .data-node {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .data-node span {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <header>
+        <h1 style="margin: 0; color: var(--primary-green);">Predictive FFB Yield Modeling via Calculus</h1>
+        <div class="tag">SFA Agrotech: Precision Plantation Module</div>
+    </header>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3 style="margin-top: 0; color: var(--primary-green);">The Bioscience Context</h3>
+            <p style="line-height: 1.5; margin-bottom: 0;">
+                In oil palm agronomy, harvesting a Fresh Fruit Bunch (FFB) at the precise biological window is critical. Harvesting too early cuts your oil extraction rate (OER) drastically, while waiting too long triggers fruit detachment and spikelet rot. By calculating the **derivative $f'(x)$**, agronomists can step away from visual guesswork and map exactly when a plantation block enters its peak daily mass-accumulation sprint.
+            </p>
+        </div>
+        
+        <div class="info-card math-card">
+            <h3 style="margin-top: 0; color: var(--secondary-blue);">Mathematical Framework</h3>
+            <p style="margin: 0 0 8px 0; font-size: 0.9rem;"><strong>Accumulated Weight Function $f(x)$:</strong></p>
+            <div class="math-block">f(x) = L / (1 + e^(-k * (x - x0)))</div>
+            
+            <p style="margin: 12px 0 8px 0; font-size: 0.9rem;"><strong>Instantaneous Daily Growth Rate $f'(x)$:</strong></p>
+            <div class="math-block">f'(x) = k * f(x) * (1 - (f(x) / L))</div>
+        </div>
+    </div>
+
+    <div class="instruction-tip">
+        <strong>💡 Field Simulator Active:</strong> Hover over the trends to view tracking markers. **Click directly on any data point** along either curve to calculate the derivative profile and deploy a custom estate action plan.
+    </div>
+
+    <div class="chart-box">
+        <canvas id="agrotechChart"></canvas>
+    </div>
+
+    <div class="output-panel" id="calculatorOutput">
+        <h3 style="margin-top: 0; color: var(--secondary-blue); display: flex; align-items: center; gap: 8px;">
+            <span>📋</span> Real-Time Derivative Calculator Panel
+        </h3>
+        <div id="dynamicContent">
+            <p style="color: #546e7a; font-style: italic; margin: 0;">Waiting for field data node selection... Click a point on the graph above.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Data reference logic derived from: <strong>Malaysian Palm Oil Board (MPOB) FFB Ripeness & Grading Specifications Manual</strong></p>
+    </footer>
+</div>
+
+<script>
+    // Configurable Biological Coefficients (MPOB General Baseline Metrics)
+    const L = 25.0;   // Carrying capacity / Max bunch weight in kg
+    const k = 0.06;   // Growth velocity factor
+    const x0 = 80;    // Median curve symmetry inflection day
+
+    // Arrays to hold calculated plot configurations
+    const labels = [];
+    const weightDataset = [];
+    const derivativeDataset = [];
+
+    // Map mathematical points from Day 0 to Day 160 in 5-day intervals
+    for (let day = 0; day <= 160; day += 5) {
+        labels.push(`Day ${day}`);
+        
+        // 1. Logistic growth state function computation f(x)
+        const fx = L / (1 + Math.exp(-k * (day - x0)));
+        weightDataset.push(parseFloat(fx.toFixed(2)));
+        
+        // 2. Exact instant rate computed via the derivative formula f'(x)
+        const fPrimeX = k * fx * (1 - (fx / L));
+        derivativeDataset.push(parseFloat(fPrimeX.toFixed(3)));
+    }
+
+    // Chart.js Object Initialization
+    const canvasContext = document.getElementById('agrotechChart').getContext('2d');
+    const agrotechChart = new Chart(canvasContext, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Total Bunch Weight f(x) [Left Axis]',
+                    data: weightDataset,
+                    borderColor: '#1b5e20',
+                    backgroundColor: 'rgba(27, 94, 32, 0.06)',
+                    yAxisID: 'yAxisWeight',
+                    borderWidth: 3,
+                    tension: 0.2,
+                    pointRadius: 4,
+                    pointHoverRadius: 8
+                },
+                {
+                    label: 'Biomass Accumulation Rate f\'(x) [Right Axis]',
+                    data: derivativeDataset,
+                    borderColor: '#0d47a1',
+                    backgroundColor: 'transparent',
+                    borderDash: [6, 4],
+                    yAxisID: 'yAxisRate',
+                    borderWidth: 3,
+                    tension: 0.2,
+                    pointRadius: 4,
+                    pointHoverRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxis: {
+                    grid: { color: '#e0e0e0' },
+                    title: { display: true, text: 'Days Post-Anthesis (Inflorescence Stage)', font: { weight: 'bold' } }
+                },
+                yAxisWeight: {
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: 'Total Weight (kg)', color: '#1b5e20', font: { weight: 'bold' } },
+                    min: 0,
+                    max: 30
+                },
+                yAxisRate: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { display: true, text: 'Rate of Change (kg / day)', color: '#0d47a1', font: { weight: 'bold' } },
+                    min: 0,
+                    max: 0.45,
+                    grid: { drawOnChartArea: false } // Prevents overlapping cross lines
+                }
+            },
+            plugins: {
+                legend: { position: 'top' }
+            },
+            // The interaction callback requested for point tracking
+            onClick: (event, elements) => {
+                if (elements && elements.length > 0) {
+                    const activeIndex = elements[0].index;
+                    
+                    const selectedDay = activeIndex * 5; // Re-extrapolate back to chronological interval
+                    const selectedWeight = weightDataset[activeIndex];
+                    const selectedRate = derivativeDataset[activeIndex];
+                    
+                    evaluateAgrotechMetrics(selectedDay, selectedWeight, selectedRate);
+                }
+            }
+        }
+    });
+
+    // Evaluation engine processing the calculus rates to layman advice
+    function evaluateAgrotechMetrics(day, weight, rate) {
+        const container = document.getElementById('dynamicContent');
+        let laymanExplanation = "";
+        let colorTheme = "var(--secondary-blue)";
+
+        // Conditional evaluation logic mapping derivative thresholds to field behavior
+        if (day <= 45) {
+            laymanExplanation = "❌ <strong>Belum Matang (Immature Stage):</strong> The derivative value is extremely low. Growth is practically flatlined because the fruit is in its early structural cell-division phase. Harvesting now results in zero commercial oil return. Keep your parang in the shed.";
+            colorTheme = "#c62828";
+        } else if (day > 45 && day <= 75) {
+            laymanExplanation = "📈 <strong>Fasa Pecutan (Acceleration Sprint):</strong> The derivative is climbing fast! This is the onset of rapid mesocarp expansion. The palm is shifting resources to the bunch, causing it to gain mass significantly faster each day.";
+            colorTheme = "#ef6c00";
+        } else if (day > 75 && day <= 95) {
+            laymanExplanation = "🔥 <strong>Kadar Maksimum (The Inflection Peak):</strong> The derivative hits its absolute maximum around Day 80 (~0.375 kg/day). The blue line peaks here. Even though the bunch hasn't reached its maximum weight yet, this is the exact moment the tree is working its hardest to pack in sugars and early oil.";
+            colorTheme = "#2e7d32";
+        } else if (day > 95 && day <= 135) {
+            laymanExplanation = "⚖️ <strong>Fasa Nyahpecutan (Slowing Growth Momentum):</strong> Total weight is still increasing, but look closely at the blue line: the derivative $f'(x)$ is dropping. The rate of daily gain is slowing down as cells fill up and reach physiological limits.";
+            colorTheme = "#0277bd";
+        } else {
+            laymanExplanation = "✅ <strong>Fasa Penuaian Optimum (Harvest Window):</strong> The derivative drops down near zero. This indicates growth has stopped, and the bunch has locked in its max weight (~24-25 kg). Harvest immediately! Waiting longer will cause loose fruits to drop, spikes in Free Fatty Acids (FFA), and a penalty drop in your OER factory payout.";
+            colorTheme = "#2e7d32";
+        }
+
+        // Inject the interactive results panel layout dynamically
+        container.innerHTML = `
+            <div class="output-grid">
+                <div class="data-node" style="border-left: 4px solid #757575;">
+                    <small style="color: #616161; font-weight: 600;">Timeline Marker</small>
+                    <span style="color: #212121;">Day ${day}</span>
+                </div>
+                <div class="data-node" style="border-left: 4px solid var(--primary-green);">
+                    <small style="color: #616161; font-weight: 600;">Bunch Mass f(x)</small>
+                    <span style="color: var(--primary-green);">${weight} kg</span>
+                </div>
+                <div class="data-node" style="border-left: 4px solid ${colorTheme};">
+                    <small style="color: #616161; font-weight: 600;">Derivative Value f'(x)</small>
+                    <span style="color: ${colorTheme};">${rate} kg / day</span>
+                </div>
+            </div>
+            <p style="margin: 15px 0 0 0; line-height: 1.6; font-size: 1.05rem; color: #263238;">
+                ${laymanExplanation}
+            </p>
+            <div style="margin-top: 10px; font-size: 0.85rem; color: #546e7a;">
+                <em>Calculus Insight: On Day ${day}, the instantaneous slope of the curve is exactly ${rate}. If conditions remained perfectly static for the next 24 hours, the bunch would accumulate precisely ${rate} kg of mass.</em>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
